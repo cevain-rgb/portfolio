@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV - Njinang Koupgang Claudel</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --navy: #2E3A59;
+    --section-bg: #E8EBF2;
+    --text-dark: #222222;
+    --grey: #555555;
+    --accent: #4A5B8C;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: #ececec;
+    color: var(--text-dark);
+  }
+
+  body {
+    padding: 30px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .toolbar {
+    width: 100%;
+    max-width: 794px;
+    margin: 0 auto 16px auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .download-btn {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+
+  .download-btn:hover { background: var(--accent); }
+  .download-btn:active { transform: scale(0.97); }
+
+  #cv {
+    width: 100%;
+    max-width: 794px;
+    min-height: 1123px;
+    margin: 0 auto;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header-band {
+    background: var(--navy);
+    color: #fff;
+    padding: 26px 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-text h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+  }
+
+  .header-text .name-line {
+    margin: 0 0 30px 0;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+  }
+
+  .header-coords {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #D8DCE8;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .header-coords span { white-space: nowrap; }
+  .header-coords span:not(:last-child)::after {
+    content: "|";
+    margin: 0 10px;
+    color: #8892b0;
+  }
+
+  .photo-slot {
+    flex-shrink: 0;
+    width: 130px;
+    height: 130px;
+    border: 2px dashed #8892B0;
+    border-radius: 6px;
+    background: #3F4C70;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+
+  .photo-slot span {
+    color: #C3C9DC;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    padding: 0 8px;
+  }
+
+  .photo-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .photo-slot.has-photo span { display: none; }
+  .photo-slot.has-photo img { display: block; }
+  .photo-slot input { display: none; }
+
+  .body-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 34px;
+  }
+
+  .section-title {
+    background: var(--section-bg);
+    color: var(--navy);
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    margin: 22px 34px 10px 34px;
+    border-radius: 3px;
+  }
+
+  .profil-text {
+    font-size: 14.5px;
+    line-height: 1.6;
+    padding: 0 34px;
+  }
+
+  .columns {
+    display: flex;
+    gap: 24px;
+    padding: 0 34px;
+    margin-top: 6px;
+    flex: 1;
+  }
+
+  .col-left { flex: 1.5; display: flex; flex-direction: column; }
+  .col-right { flex: 1; display: flex; flex-direction: column; }
+
+  .col-left .section-title,
+  .col-right .section-title { margin-left: 0; margin-right: 0; }
+
+  .job-title { font-weight: bold; font-size: 15px; margin: 10px 0 2px 0; }
+
+  .job-meta {
+    font-style: italic;
+    color: var(--grey);
+    font-size: 13px;
+    margin: 0 0 10px 0;
+  }
+
+  ul.cv-list { margin: 4px 0 16px 0; padding-left: 18px; }
+  ul.cv-list li { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
+
+  .skill-group-title {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: var(--navy);
+    font-size: 13.5px;
+    margin: 14px 0 5px 0;
+  }
+  .skill-group-title:first-of-type { margin-top: 4px; }
+
+  ul.skill-list { margin: 0 0 6px 0; padding-left: 16px; }
+  ul.skill-list li { font-size: 13.5px; margin-bottom: 5px; line-height: 1.5; }
+
+  .formation-item { margin-bottom: 16px; }
+
+  .lang-line { font-size: 14px; margin-bottom: 8px; }
+  .lang-line strong { color: var(--text-dark); }
+
+  .spacer-block { flex-grow: 1; }
+
+  @media print {
+    html, body { background: #fff; }
+    body { padding: 0; align-items: stretch; }
+    .toolbar { display: none; }
+    #cv { box-shadow: none; max-width: 100%; }
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 16px 8px; }
+    .toolbar { max-width: 100%; justify-content: center; flex-wrap: wrap; }
+    .download-btn { width: 100%; max-width: 320px; }
+    #cv { min-height: 0; max-width: 100%; border-radius: 5px;}
+    .header-band { padding: 10px; flex-direction: column; align-items: flex-start; border-top-left-radius: 5px;border-top-right-radius: 5px;}
+    .header-text h1 { font-size: 21px; }
+    .photo-slot { width: 96px; height: 96px; align-self: center; }
+    .section-title { margin-left: 20px; margin-right: 20px; }
+    .profil-text { padding: 0 20px; }
+    .columns { flex-direction: column; padding: 0 20px; gap: 0; }
+    .col-left, .col-right { flex: none; }
+    .spacer-block { flex-grow: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="download-btn" id="downloadBtn">⬇ Télécharger en PDF</button>
+</div>
+
+<div id="cv">
+  <div class="header-band">
+    <div class="header-text">
+      <h1>DÉVELOPPEUR FULLSTACK</h1>
+      <div class="name-line">Njinang Koupgang Claudel</div>
+      <div class="header-coords">
+        <span>Bafoussam, Cameroun</span>
+        <span>+237 656 511 285</span>
+        <span>cevainnji4@gmail.com</span>
+        <span>linkedin.com/in/njinang-claudel</span>
+      </div>
+    </div>
+
+    <label class="photo-slot" id="photoSlot" title="Cliquer pour ajouter une photo">
+      <span>PHOTO</span>
+      <img id="photoImg" alt="Photo de profil">
+      <input type="file" id="photoInput" accept="image/*">
+    </label>
+  </div>
+
+  <div class="body-content">
+    <div class="section-title">Profil professionnel</div>
+    <div class="profil-text">
+      Développeur Fullstack passionné, je conçois des applications web complètes, de la base de données à l'interface utilisateur.
+      À l'aise sur PHP, Python (Django, Flask) et JavaScript (React, Node.js), je m'appuie sur PostgreSQL et MySQL pour structurer
+      des systèmes de gestion fiables. J'accorde une attention particulière à la qualité du code, à la sécurité des déploiements
+      et à l'expérience utilisateur.
+    </div>
+
+    <div class="columns">
+      <div class="col-left">
+        <div class="section-title">Expériences professionnelles</div>
+        <div class="job-title">Développeur Fullstack | Freelance | Bafoussam</div>
+        <div class="job-meta">2024 – Aujourd'hui</div>
+        <ul class="cv-list">
+          <li>Développement d'une application de gestion de stock et commandes avec PHP et PostgreSQL</li>
+          <li>Déploiement de l'application de gestion de stock sur serveur local avec accès mobile sécurisé</li>
+          <li>Développement d'une application de gestion de confection avec Django et React</li>
+          <li>Développement de la plateforme de vente en ligne « ViteVendre » et déploiement sur un VPS</li>
+        </ul>
+
+        <div class="section-title">Formation</div>
+        <div class="formation-item">
+          <div class="job-title">Licence Technologie – Concepteur Développeur Réseau et Internet</div>
+          <div class="job-meta">IUT Fotso Victor de Bandjoun | 2025 – 2026</div>
+        </div>
+        <div class="formation-item">
+          <div class="job-title">BTS Génie Logiciel</div>
+          <div class="job-meta">Institut Universitaire de la Pointe de Bafoussam | 2023 – 2025</div>
+        </div>
+
+        <div class="spacer-block"></div>
+      </div>
+
+      <div class="col-right">
+        <div class="section-title">Compétences techniques</div>
+
+        <div class="skill-group-title">Langages</div>
+        <ul class="skill-list">
+          <li>Python</li>
+          <li>JavaScript</li>
+          <li>PHP</li>
+        </ul>
+
+        <div class="skill-group-title">Backend</div>
+        <ul class="skill-list">
+          <li>Django, Flask</li>
+          <li>Node.js, Express.js</li>
+        </ul>
+
+        <div class="skill-group-title">Frontend</div>
+        <ul class="skill-list">
+          <li>React</li>
+          <li>CSS3, Tailwind</li>
+        </ul>
+
+        <div class="skill-group-title">Bases de données</div>
+        <ul class="skill-list">
+          <li>MySQL, PostgreSQL</li>
+        </ul>
+
+        <div class="skill-group-title">Outils</div>
+        <ul class="skill-list">
+          <li>Git, Docker, VS Code</li>
+          <li>Postman, Nginx, Apache</li>
+        </ul>
+
+        <div class="section-title">Langues</div>
+        <div class="lang-line"><strong>Français :</strong> Courant</div>
+        <div class="lang-line"><strong>Anglais :</strong> Technique</div>
+
+        <div class="spacer-block"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV - Njinang Koupgang Claudel</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #2E3A59;
+    --section-bg: #E8EBF2;
+    --text-dark: #222222;
+    --grey: #555555;
+    --accent: #4A5B8C;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: #ececec;
+    color: var(--text-dark);
+  }
+
+  body {
+    padding: 30px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .toolbar {
+    width: 100%;
+    max-width: 794px;
+    margin: 0 auto 16px auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .download-btn {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+
+  .download-btn:hover { background: var(--accent); }
+  .download-btn:active { transform: scale(0.97); }
+
+  #cv {
+    width: 100%;
+    max-width: 794px;
+    min-height: 1123px;
+    margin: 0 auto;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header-band {
+    background: var(--navy);
+    color: #fff;
+    padding: 26px 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-text h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+  }
+
+  .header-text .name-line {
+    margin: 0 0 30px 0;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+  }
+
+  .header-coords {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #D8DCE8;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .header-coords span { white-space: nowrap; }
+  .header-coords span:not(:last-child)::after {
+    content: "|";
+    margin: 0 10px;
+    color: #8892b0;
+  }
+
+  .photo-slot {
+    flex-shrink: 0;
+    width: 130px;
+    height: 130px;
+    border: 2px dashed #8892B0;
+    border-radius: 6px;
+    background: #3F4C70;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+
+  .photo-slot span {
+    color: #C3C9DC;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    padding: 0 8px;
+  }
+
+  .photo-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .photo-slot.has-photo span { display: none; }
+  .photo-slot.has-photo img { display: block; }
+  .photo-slot input { display: none; }
+
+  .body-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 34px;
+  }
+
+  .section-title {
+    background: var(--section-bg);
+    color: var(--navy);
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    margin: 22px 34px 10px 34px;
+    border-radius: 3px;
+  }
+
+  .profil-text {
+    font-size: 14.5px;
+    line-height: 1.6;
+    padding: 0 34px;
+  }
+
+  .columns {
+    display: flex;
+    gap: 24px;
+    padding: 0 34px;
+    margin-top: 6px;
+    flex: 1;
+  }
+
+  .col-left { flex: 1.5; display: flex; flex-direction: column; }
+  .col-right { flex: 1; display: flex; flex-direction: column; }
+
+  .col-left .section-title,
+  .col-right .section-title { margin-left: 0; margin-right: 0; }
+
+  .job-title { font-weight: bold; font-size: 15px; margin: 10px 0 2px 0; }
+
+  .job-meta {
+    font-style: italic;
+    color: var(--grey);
+    font-size: 13px;
+    margin: 0 0 10px 0;
+  }
+
+  ul.cv-list { margin: 4px 0 16px 0; padding-left: 18px; }
+  ul.cv-list li { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
+
+  .skill-group-title {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: var(--navy);
+    font-size: 13.5px;
+    margin: 14px 0 5px 0;
+  }
+  .skill-group-title:first-of-type { margin-top: 4px; }
+
+  ul.skill-list { margin: 0 0 6px 0; padding-left: 16px; }
+  ul.skill-list li { font-size: 13.5px; margin-bottom: 5px; line-height: 1.5; }
+
+  .formation-item { margin-bottom: 16px; }
+
+  .lang-line { font-size: 14px; margin-bottom: 8px; }
+  .lang-line strong { color: var(--text-dark); }
+
+  .spacer-block { flex-grow: 1; }
+
+  @media print {
+    html, body { background: #fff; }
+    body { padding: 0; align-items: stretch; }
+    .toolbar { display: none; }
+    #cv { box-shadow: none; max-width: 100%; }
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 16px 8px; }
+    .toolbar { max-width: 100%; justify-content: center; flex-wrap: wrap; }
+    .download-btn { width: 100%; max-width: 320px; }
+    #cv { min-height: 0; max-width: 100%; border-radius: 5px;}
+    .header-band { padding: 10px; flex-direction: column; align-items: flex-start; border-top-left-radius: 5px;border-top-right-radius: 5px;}
+    .header-text h1 { font-size: 21px; }
+    .photo-slot { width: 96px; height: 96px; align-self: center; }
+    .section-title { margin-left: 20px; margin-right: 20px; }
+    .profil-text { padding: 0 20px; }
+    .columns { flex-direction: column; padding: 0 20px; gap: 0; }
+    .col-left, .col-right { flex: none; }
+    .spacer-block { flex-grow: 0; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="download-btn" id="downloadBtn">⬇ Télécharger en PDF</button>
+</div>
+
+<div id="cv">
+  <div class="header-band">
+    <div class="header-text">
+      <h1>DÉVELOPPEUR FULLSTACK</h1>
+      <div class="name-line">Njinang Koupgang Claudel</div>
+      <div class="header-coords">
+        <span>Bafoussam, Cameroun</span>
+        <span>+237 656 511 285</span>
+        <span>cevainnji4@gmail.com</span>
+        <span>linkedin.com/in/njinang-claudel</span>
+      </div>
+    </div>
+
+    <label class="photo-slot" id="photoSlot" title="Cliquer pour ajouter une photo">
+      <span>PHOTO</span>
+      <img id="photoImg" alt="Photo de profil">
+      <input type="file" id="photoInput" accept="image/*">
+    </label>
+  </div>
+
+  <div class="body-content">
+    <div class="section-title">Profil professionnel</div>
+    <div class="profil-text">
+      Développeur Fullstack passionné, je conçois des applications web complètes, de la base de données à l'interface utilisateur.
+      À l'aise sur PHP, Python (Django, Flask) et JavaScript (React, Node.js), je m'appuie sur PostgreSQL et MySQL pour structurer
+      des systèmes de gestion fiables. J'accorde une attention particulière à la qualité du code, à la sécurité des déploiements
+      et à l'expérience utilisateur.
+    </div>
+
+    <div class="columns">
+      <div class="col-left">
+        <div class="section-title">Expériences professionnelles</div>
+        <div class="job-title">Développeur Fullstack | Freelance | Bafoussam</div>
+        <div class="job-meta">2024 – Aujourd'hui</div>
+        <ul class="cv-list">
+          <li>Développement d'une application de gestion de stock et commandes avec PHP et PostgreSQL</li>
+          <li>Déploiement de l'application de gestion de stock sur serveur local avec accès mobile sécurisé</li>
+          <li>Développement d'une application de gestion de confection avec Django et React</li>
+          <li>Développement de la plateforme de vente en ligne « ViteVendre » et déploiement sur un VPS</li>
+        </ul>
+
+        <div class="job-title">Stagiaire Développeur Fullstack | Twinsoft Technology</div>
+        <div class="job-meta">Stage académique | Juillet – Août 2025</div>
+
+        <div class="section-title">Formation</div>
+        <div class="formation-item">
+          <div class="job-title">Licence Technologie – Concepteur Développeur Réseau et Internet</div>
+          <div class="job-meta">IUT Fotso Victor de Bandjoun | 2025 – 2026</div>
+        </div>
+        <div class="formation-item">
+          <div class="job-title">BTS Génie Logiciel</div>
+          <div class="job-meta">Institut Universitaire de la Pointe de Bafoussam | 2023 – 2025</div>
+        </div>
+
+        <div class="spacer-block"></div>
+      </div>
+
+      <div class="col-right">
+        <div class="section-title">Compétences techniques</div>
+
+        <div class="skill-group-title">Langages</div>
+        <ul class="skill-list">
+          <li>Python</li>
+          <li>JavaScript</li>
+          <li>PHP</li>
+        </ul>
+
+        <div class="skill-group-title">Backend</div>
+        <ul class="skill-list">
+          <li>Django, Flask</li>
+          <li>Node.js, Express.js</li>
+        </ul>
+
+        <div class="skill-group-title">Frontend</div>
+        <ul class="skill-list">
+          <li>React</li>
+          <li>CSS3, Tailwind</li>
+        </ul>
+
+        <div class="skill-group-title">Bases de données</div>
+        <ul class="skill-list">
+          <li>MySQL, PostgreSQL</li>
+        </ul>
+
+        <div class="skill-group-title">Outils</div>
+        <ul class="skill-list">
+          <li>Git, Docker, VS Code</li>
+          <li>Postman, Nginx, Apache</li>
+        </ul>
+
+        <div class="section-title">Langues</div>
+        <div class="lang-line"><strong>Français :</strong> Courant</div>
+        <div class="lang-line"><strong>Anglais :</strong> Technique</div>
+
+        <div class="spacer-block"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const photoInput = document.getElementById('photoInput');
+  const photoSlot = document.getElementById('photoSlot');
+  const photoImg = document.getElementById('photoImg');
+
+  photoInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      photoImg.src = ev.target.result;
+      photoSlot.classList.add('has-photo');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', async function () {
+    const btn = this;
+    const originalLabel = btn.textContent;
+    btn.textContent = 'Génération…';
+    btn.disabled = true;
+
+    // La vraie cause du décalage : sur mobile, html2canvas capturait le
+    // #cv réel (affiché en largeur mobile) tout en essayant de le forcer
+    // à 794px via des options de fenêtre virtuelle — les deux tailles ne
+    // correspondaient jamais exactement, d'où le contenu décalé/rogné.
+    // On élimine ce problème en construisant une copie du CV totalement
+    // indépendante de l'écran : largeur fixe de 794px, insérée hors du
+    // cadre visible (opacité 0, non cliquable), puis capturée telle
+    // quelle, sans aucune option de redimensionnement.
+    const clone = document.getElementById('cv').cloneNode(true);
+    clone.removeAttribute('id');
+    Object.assign(clone.style, {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '794px',
+      maxWidth: '794px',
+      minHeight: '0',
+      margin: '0',
+      boxShadow: 'none',
+      borderRadius: '0',
+      opacity: '0',
+      pointerEvents: 'none',
+      zIndex: '-1'
+    });
+    document.body.appendChild(clone);
+
+    try {
+      // Laisse le navigateur mettre en page le clone avant de le capturer
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+      const canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+      // Le PDF fait exactement une page, dimensionnée sur le contenu réel
+      // du CV : plus de coupure ni de saut de page.
+      const pxToMm = px => (px * 25.4) / 96;
+      const pdfWidth = pxToMm(clone.offsetWidth);
+      const pdfHeight = pxToMm(clone.scrollHeight);
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        unit: 'mm',
+        format: [pdfWidth, pdfHeight],
+        orientation: 'portrait'
+      });
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('CV_Njinang_Claudel.pdf');
+    } catch (err) {
+      alert('Erreur lors de la génération du PDF : ' + err.message);
+    } finally {
+      document.body.removeChild(clone);
+      btn.textContent = originalLabel;
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
+
+
+</body>
+</html>

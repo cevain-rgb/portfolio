@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Njinang Claudel — Développeur Fullstack</title>
+<script>
+  (function(){
+    var saved = localStorage.getItem('theme');
+    var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          mono: ['"JetBrains Mono"', 'monospace'],
+          sans: ['Inter', 'sans-serif'],
+        },
+        colors: {
+          accent: { DEFAULT: '#5eead4', dim: '#2c554f' },
+          accent2: '#f0b429',
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #0d1117; color: #dbe4ea; transition: background .3s ease, color .3s ease; }
+  html[data-theme="light"] body { background: #f7f8fa; color: #1a222b; }
+
+  ::selection { background: #2c554f; color: #5eead4; }
+  html[data-theme="light"] ::selection { background: #cdf0ea; color: #0f9d8d; }
+
+  .bg-surface { background: #131a22; border-color: #22303c; }
+  html[data-theme="light"] .bg-surface { background: #ffffff; border-color: #dde2e7; }
+
+  .text-dim { color: #7f909d; }
+  html[data-theme="light"] .text-dim { color: #64717d; }
+
+  .border-line { border-color: #22303c; }
+  html[data-theme="light"] .border-line { border-color: #dde2e7; }
+
+  .accent-txt { color: #5eead4; }
+  html[data-theme="light"] .accent-txt { color: #0f9d8d; }
+
+  .accent2-txt { color: #f0b429; }
+  html[data-theme="light"] .accent2-txt { color: #b8790a; }
+
+  .brand-icon { filter: grayscale(0) opacity(0.9); transition: transform .15s ease, opacity .15s ease; }
+  .pill:hover .brand-icon { transform: scale(1.12); opacity: 1; }
+
+  .grid-bg::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(#22303c 1px, transparent 1px),
+      linear-gradient(90deg, #22303c 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.15;
+    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, black, transparent);
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, black, transparent);
+  }
+
+  .cursor-blink{ animation: blink 1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .float{ animation: float 4s ease-in-out infinite; }
+  @keyframes float{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-8px); } }
+
+  .spin-slow{ animation: spin 20s linear infinite; }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  .reveal{ opacity:0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform: translateY(0); }
+  .reveal-stagger > *{ opacity:0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal-stagger.in > *{ opacity:1; transform: translateY(0); }
+  .reveal-stagger.in > *:nth-child(1){ transition-delay: .05s; }
+  .reveal-stagger.in > *:nth-child(2){ transition-delay: .12s; }
+  .reveal-stagger.in > *:nth-child(3){ transition-delay: .19s; }
+  .reveal-stagger.in > *:nth-child(4){ transition-delay: .26s; }
+  .reveal-stagger.in > *:nth-child(5){ transition-delay: .33s; }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .reveal-stagger > *, .cursor-blink, .float, .spin-slow, .photo-3d{ transition:none !important; animation:none !important; opacity:1 !important; transform:none !important; }
+  }
+
+  /* 3D photo frame (hero) */
+  .photo-3d-wrap{ perspective: 900px; }
+  .photo-3d{
+    transform-style: preserve-3d;
+    transition: transform .15s ease-out, box-shadow .3s ease;
+    will-change: transform;
+  }
+  .photo-3d-inner{ transform: translateZ(20px); transform-style: preserve-3d; }
+  .photo-3d-shine{
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+    mix-blend-mode: overlay;
+  }
+
+  /* mobile top menu (kept for small screens fallback, unused now) */
+  #mobileMenu{ transition: max-height .3s ease, opacity .25s ease; }
+
+  /* side dock nav */
+  #sideDock{
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .dock-link{
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+  }
+  .dock-link:hover, .dock-link.active{
+    border-color: #5eead4;
+    transform: translateX(-3px);
+  }
+  .nav-link.active{ color: #5eead4; }
+  .dock-tooltip{
+    opacity: 0; pointer-events:none;
+    transition: opacity .15s ease, transform .15s ease;
+    transform: translateX(6px);
+  }
+  .dock-link:hover .dock-tooltip{ opacity:1; transform: translateX(0); }
+
+  /* back to top button */
+  #backToTop{
+    opacity: 0; pointer-events:none; transform: translateY(10px) scale(0.9);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  #backToTop.show{ opacity: 1; pointer-events:auto; transform: translateY(0) scale(1); }
+
+  /* typing effect */
+  #typedCmd::after{ content: ''; }
+</style>
+</head>
+<body class="font-sans leading-relaxed">
+
+<!-- TOP NAV: logo left, section links centered (desktop only), theme toggle right -->
+<nav class="sticky top-0 z-50 backdrop-blur-md border-b border-line bg-inherit">
+  <div class="max-w-4xl mx-auto px-6 h-[60px] flex items-center justify-between relative">
+    <a href="#top" class="font-mono font-bold text-accent flex items-center gap-2 text-[15px] z-10 flex-shrink-0">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      nc<span class="text-dim">@</span>fullstack
+    </a>
+
+    <div class="hidden md:flex items-center gap-8 font-mono text-[13px] text-dim absolute left-1/2 -translate-x-1/2">
+      <a href="#top" data-section="top" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
+        accueil
+      </a>
+      <a href="#stack" data-section="stack" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        stack
+      </a>
+      <a href="#projects" data-section="projects" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        projets
+      </a>
+      <a href="#contact" data-section="contact" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+        contact
+      </a>
+    </div>
+
+    <button id="themeToggle" aria-label="Basculer le thème" class="w-9 h-9 rounded-lg border border-line bg-surface flex items-center justify-center hover:border-accent hover:-translate-y-0.5 transition-all z-10 flex-shrink-0">
+      <svg class="moon-ic w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun-ic w-[18px] h-[18px] hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- SIDE DOCK NAVIGATION -->
+<!-- Desktop: right side, vertical, icon + label. Mobile: middle-right of viewport, icons only. -->
+<div id="sideDock" class="md:hidden fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5">
+  <a href="#top" data-section="top" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+    <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
+    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">accueil</span>
+    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">accueil</span>
+  </a>
+  <a href="#stack" data-section="stack" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+    <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">stack</span>
+    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">stack</span>
+  </a>
+  <a href="#projects" data-section="projects" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+    <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">projets</span>
+    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">projets</span>
+  </a>
+  <a href="#contact" data-section="contact" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+    <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">contact</span>
+    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">contact</span>
+  </a>
+</div>
+
+<!-- BACK TO TOP -->
+<button id="backToTop" aria-label="Retour en haut" class="fixed bottom-6 right-3 md:right-5 z-40 w-11 h-11 rounded-full bg-surface border border-line shadow-lg flex items-center justify-center hover:border-accent hover:-translate-y-1 transition-all">
+  <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
+<!-- HERO -->
+<header id="top" class="relative overflow-hidden border-b border-line grid-bg pt-24 pb-20">
+  <div class="max-w-4xl mx-auto px-6 relative grid md:grid-cols-[1fr_auto] gap-10 items-center">
+
+    <!-- PHOTO: above text on mobile, right of text on desktop -->
+    <div class="photo-3d-wrap mx-auto md:mx-0 order-first md:order-last">
+      <div id="photoCard" class="photo-3d relative w-[130px] h-[130px] md:w-[150px] md:h-[150px] rounded-full bg-surface border border-line flex items-center justify-center overflow-hidden shadow-2xl">
+        <div class="absolute -inset-2 rounded-full border border-dashed spin-slow pointer-events-none" style="border-color:#2c554f;"></div>
+        <div class="photo-3d-inner flex flex-col items-center justify-center gap-1 text-dim relative z-10">
+          <svg class="w-10 h-10 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span class="font-mono text-[10px] text-center px-2">photo à venir</span>
+        </div>
+        <div class="photo-3d-shine absolute inset-0 pointer-events-none"></div>
+      </div>
+    </div>
+
+    <div class="reveal in text-center md:text-left">
+      <div class="font-mono accent-txt text-sm mb-4 flex items-center justify-center md:justify-start gap-2">
+        <span class="text-dim">$</span> <span id="typedCmd">whoami</span><span class="inline-block w-2 h-4 bg-current cursor-blink align-middle"></span>
+      </div>
+      <h1 class="text-[40px] md:text-[60px] font-extrabold tracking-tight leading-[1.05] mb-4">
+        Njinang <span class="accent-txt">Claudel</span>
+      </h1>
+      <div class="font-mono text-[17px] text-dim mb-7">
+        Développeur <span class="accent2-txt font-semibold">Fullstack</span> — Python · JavaScript · PHP
+      </div>
+      <div class="flex flex-wrap justify-center md:justify-start gap-3.5">
+        <a href="mailto:cevainnji4@gmail.com" class="inline-flex items-center gap-2 font-mono text-[13px] px-5 py-2.5 rounded-md border border-accent hover:brightness-110 hover:-translate-y-0.5 transition-all" style="background:#5eead4; color:#0d1117;">
+          <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          Me contacter
+        </a>
+        <a href="https://github.com/cevain-rgb" target="_blank" rel="noopener" class="inline-flex items-center gap-2 font-mono text-[13px] px-5 py-2.5 rounded-md border border-line hover:border-accent hover:accent-txt hover:-translate-y-0.5 transition-all">
+          <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          Voir GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STACK -->
+<section id="stack" class="py-16 md:py-20 border-b border-line">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="reveal flex items-baseline gap-3 mb-9">
+      <span class="font-mono text-sm accent-txt opacity-60">01</span>
+      <h2 class="text-[22px] font-bold tracking-tight">Stack technique</h2>
+      <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
+    </div>
+
+    <div class="reveal reveal-stagger grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all">
+        <h3 class="font-mono text-xs uppercase tracking-widest text-dim mb-4">Langages</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border bg-black/20 flex items-center gap-2 accent-txt" style="border-color:#2c554f;">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/python/5eead4" alt="Python">Python
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border bg-black/20 flex items-center gap-2 accent-txt" style="border-color:#2c554f;">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/javascript/5eead4" alt="JavaScript">JavaScript
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border bg-black/20 flex items-center gap-2 accent-txt" style="border-color:#2c554f;">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/php/5eead4" alt="PHP">PHP
+          </span>
+        </div>
+      </div>
+
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all">
+        <h3 class="font-mono text-xs uppercase tracking-widest text-dim mb-4">Frameworks</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/django/dbe4ea" alt="Django">Django
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/flask/dbe4ea" alt="Flask">Flask
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/nodedotjs/dbe4ea" alt="Node.js">Node.js
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/express/dbe4ea" alt="Express">Express
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/react/dbe4ea" alt="React">React
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/react/dbe4ea" alt="React Native">React Native
+          </span>
+        </div>
+      </div>
+
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all">
+        <h3 class="font-mono text-xs uppercase tracking-widest text-dim mb-4">Bases de données</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/mysql/dbe4ea" alt="MySQL">MySQL
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/postgresql/dbe4ea" alt="PostgreSQL">PostgreSQL
+          </span>
+        </div>
+      </div>
+
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all">
+        <h3 class="font-mono text-xs uppercase tracking-widest text-dim mb-4">Outils</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/visualstudiocode/dbe4ea" alt="VS Code">VS Code
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/docker/dbe4ea" alt="Docker">Docker
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/postman/dbe4ea" alt="Postman">Postman
+          </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/nginx/dbe4ea" alt="Nginx">Nginx
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="py-16 md:py-20 border-b border-line">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="reveal flex items-baseline gap-3 mb-9">
+      <span class="font-mono text-sm accent-txt opacity-60">02</span>
+      <h2 class="text-[22px] font-bold tracking-tight">Projets</h2>
+      <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
+    </div>
+
+    <div class="reveal reveal-stagger grid sm:grid-cols-2 gap-6">
+      <!-- Projet 1 : Gestion de stocks -->
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-4" style="background:#2c554f;">
+          <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Système de gestion de stocks</h3>
+        <p class="text-dim text-sm mb-4 flex-1">
+          Application web pour suivre les entrées/sorties d'articles, gérer les niveaux d'alerte et générer des rapports d'inventaire en temps réel pour plusieurs entrepôts.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Django</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">PostgreSQL</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">React</span>
+        </div>
+        <span class="font-mono text-xs text-dim italic">Projet illustratif — code source à venir</span>
+      </div>
+
+      <!-- Projet 2 : Gestion du personnel -->
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-4" style="background:#2c554f;">
+          <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Application de gestion du personnel</h3>
+        <p class="text-dim text-sm mb-4 flex-1">
+          Plateforme RH pour centraliser les dossiers employés, suivre les congés et absences, et automatiser le calcul de la paie mensuelle.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Node.js / Express</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">MySQL</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">React Native</span>
+        </div>
+        <span class="font-mono text-xs text-dim italic">Projet illustratif — code source à venir</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-16 md:py-20">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="reveal flex items-baseline gap-3 mb-9">
+      <span class="font-mono text-sm accent-txt opacity-60">03</span>
+      <h2 class="text-[22px] font-bold tracking-tight">Contact</h2>
+      <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
+    </div>
+
+    <div class="reveal reveal-stagger grid sm:grid-cols-3 gap-4">
+      <a href="mailto:cevainnji4@gmail.com" class="flex items-center gap-3.5 bg-surface border border-line rounded-xl px-5 py-4 hover:border-accent hover:-translate-y-1 hover:shadow-xl transition-all">
+        <div class="w-[38px] h-[38px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#2c554f;">
+          <svg class="w-[19px] h-[19px] accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+        </div>
+        <div>
+          <div class="font-mono text-[11px] uppercase tracking-wide text-dim">Email</div>
+          <div class="text-sm break-all">cevainnji4@gmail.com</div>
+        </div>
+      </a>
+      <a href="https://github.com/cevain-rgb" target="_blank" rel="noopener" class="flex items-center gap-3.5 bg-surface border border-line rounded-xl px-5 py-4 hover:border-accent hover:-translate-y-1 hover:shadow-xl transition-all">
+        <div class="w-[38px] h-[38px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#2c554f;">
+          <svg class="w-[19px] h-[19px] accent-txt" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+        </div>
+        <div>
+          <div class="font-mono text-[11px] uppercase tracking-wide text-dim">GitHub</div>
+          <div class="text-sm break-all">github.com/cevain-rgb</div>
+        </div>
+      </a>
+      <a href="https://linkedin.com/in/njinang-claudel" target="_blank" rel="noopener" class="flex items-center gap-3.5 bg-surface border border-line rounded-xl px-5 py-4 hover:border-accent hover:-translate-y-1 hover:shadow-xl transition-all">
+        <div class="w-[38px] h-[38px] rounded-lg flex items-center justify-center flex-shrink-0" style="background:#2c554f;">
+          <svg class="w-[19px] h-[19px] accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </div>
+        <div>
+          <div class="font-mono text-[11px] uppercase tracking-wide text-dim">LinkedIn</div>
+          <div class="text-sm break-all">linkedin.com/in/njinang-claudel</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="py-8 text-center text-dim font-mono text-xs pb-24">
+  © 2026 Njinang Claudel — construit avec soin.
+</footer>
+
+<script>
+  // Theme toggle
+  function setTheme(theme){
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    document.querySelectorAll('.sun-ic').forEach(function(el){ el.classList.toggle('hidden', theme !== 'light'); });
+    document.querySelectorAll('.moon-ic').forEach(function(el){ el.classList.toggle('hidden', theme === 'light'); });
+  }
+  var initial = document.documentElement.getAttribute('data-theme') || 'dark';
+  setTheme(initial);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var current = document.documentElement.getAttribute('data-theme');
+    setTheme(current === 'light' ? 'dark' : 'light');
+  });
+
+  // Reveal on scroll
+  var revealEls = document.querySelectorAll('.reveal:not(.in)');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(function(el){ io.observe(el); });
+
+  // 3D tilt effect on photo card
+  var card = document.getElementById('photoCard');
+  var wrap = card.closest('.photo-3d-wrap');
+  wrap.addEventListener('mousemove', function(e){
+    var rect = card.getBoundingClientRect();
+    var x = (e.clientX - rect.left) / rect.width - 0.5;
+    var y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = 'rotateY(' + (x * 20) + 'deg) rotateX(' + (-y * 20) + 'deg) scale(1.05)';
+  });
+  wrap.addEventListener('mouseleave', function(){
+    card.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
+  });
+
+  // Back to top button visibility
+  var backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 400){ backBtn.classList.add('show'); }
+    else{ backBtn.classList.remove('show'); }
+  });
+  backBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Active state on side dock based on scroll position
+  var sections = ['top','stack','projects','contact'].map(function(id){ return document.getElementById(id); });
+  var dockLinks = document.querySelectorAll('.dock-link, .nav-link');
+  var sectionIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var id = entry.target.getAttribute('id');
+        dockLinks.forEach(function(link){
+          link.classList.toggle('active', link.getAttribute('data-section') === id);
+        });
+      }
+    });
+  }, { threshold: 0.4, rootMargin: '-80px 0px -40% 0px' });
+  sections.forEach(function(sec){ if(sec) sectionIO.observe(sec); });
+
+  // Typing effect: cycles "whoami" through related commands
+  var commands = ['whoami', 'cat skills.txt', 'ls projects/', 'echo "Bonjour !"'];
+  var typedEl = document.getElementById('typedCmd');
+  var cmdIndex = 0;
+  var charIndex = 0;
+  var deleting = false;
+
+  function typeLoop(){
+    var current = commands[cmdIndex];
+    if(!deleting){
+      charIndex++;
+      typedEl.textContent = current.slice(0, charIndex);
+      if(charIndex === current.length){
+        deleting = true;
+        setTimeout(typeLoop, 1600);
+        return;
+      }
+      setTimeout(typeLoop, 85);
+    } else {
+      charIndex--;
+      typedEl.textContent = current.slice(0, charIndex);
+      if(charIndex === 0){
+        deleting = false;
+        cmdIndex = (cmdIndex + 1) % commands.length;
+        setTimeout(typeLoop, 300);
+        return;
+      }
+      setTimeout(typeLoop, 40);
+    }
+  }
+  typedEl.textContent = '';
+  setTimeout(typeLoop, 500);
+</script>
+
+</body>
+</html>
