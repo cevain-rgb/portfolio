@@ -280,15 +280,12 @@
     <div class="columns">
       <div class="col-left">
         <div class="section-title">Projets et expériences professionnelles</div>
-        <!-- <div class="job-title">Développeur Fullstack | Freelance | Bafoussam</div>
-        <div class="job-meta">2025 – Aujourd'hui</div> -->
         <ul class="cv-list">
           <li>Développement d'une application de gestion de vente « Safa » pour boutique avec Django et React</li>
           <li>Développement d'une application de gestion de stock et commandes « StockManager » avec PHP et PostgreSQL</li>
           <li>Déploiement de l'application de gestion de stock « StockManager » sur VPS avec accès mobile sécurisé</li>
-          <!-- <li>Développement d'une application de gestion de confection avec Django et React</li> -->
-          <li>Développement du backend et de l'application mobile d'administration d'un système embarque de detection de la somnolence au volant </li>
-          <li>Développement d'une plateforme de vente multi-vendeur (marketplace)en ligne « Ekomarket »</li>
+          <li>Développement du backend et de l'application mobile d'administration d'un système embarqué de détection de la somnolence au volant</li>
+          <li>Développement d'une plateforme de vente multi-vendeur (marketplace) en ligne « Ekomarket »</li>
         </ul>
 
         <div class="job-title">Stagiaire | Twinsoft Technology</div>
@@ -329,7 +326,7 @@
         <div class="skill-group-title">Frontend</div>
         <ul class="skill-list">
           <li>React</li>
-          <li>React-natif</li>
+          <li>React-native</li>
           <li>CSS3, Tailwind</li>
         </ul>
 
@@ -376,37 +373,40 @@
     btn.textContent = 'Génération…';
     btn.disabled = true;
 
+    // CORRECTION : le clone doit être rendu par le navigateur pour html2canvas.
+    // Avant, il était caché par opacity:0 + z-index:-1, ce qui produisait
+    // un canvas vide (PDF blanc). Maintenant on le place hors écran
+    // (left:-10000px) tout en restant pleinement visible/rendu.
     const clone = document.getElementById('cv').cloneNode(true);
     clone.removeAttribute('id');
     Object.assign(clone.style, {
-      position: 'fixed',
+      position: 'absolute',
       top: '0',
-      left: '0',
+      left: '-10000px',
       width: '794px',
       maxWidth: '794px',
       minHeight: '0',
       margin: '0',
       boxShadow: 'none',
       borderRadius: '0',
-      opacity: '0',
-      pointerEvents: 'none',
-      zIndex: '-1'
+      zIndex: '0'
     });
     document.body.appendChild(clone);
 
     try {
-      // Laisse le navigateur mettre en page le clone avant de le capturer
+      // Laisse le navigateur mettre en page le clone (double rAF + petit délai
+      // pour être sûr que les images/polices sont prêtes)
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await new Promise(resolve => setTimeout(resolve, 120));
 
       const canvas = await html2canvas(clone, {
         scale: 2,
-        useCORS: true
+        useCORS: true,
+        backgroundColor: '#ffffff'
       });
 
       const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
-      // Le PDF fait exactement une page, dimensionnée sur le contenu réel
-      // du CV : plus de coupure ni de saut de page.
       const pxToMm = px => (px * 25.4) / 96;
       const pdfWidth = pxToMm(clone.offsetWidth);
       const pdfHeight = pxToMm(clone.scrollHeight);
@@ -418,10 +418,8 @@
         orientation: 'portrait'
       });
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('CV_Njinang_Claudel.pdf');
-    if (true) {
-      
-    }} catch (err) {
+      pdf.save('CV.pdf');
+    } catch (err) {
       alert('Erreur lors de la génération du PDF : ' + err.message);
     } finally {
       document.body.removeChild(clone);

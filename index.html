@@ -73,9 +73,6 @@
   .cursor-blink{ animation: blink 1s step-end infinite; }
   @keyframes blink{ 50%{ opacity:0; } }
 
-  .float{ animation: float 4s ease-in-out infinite; }
-  @keyframes float{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-8px); } }
-
   .spin-slow{ animation: spin 20s linear infinite; }
   @keyframes spin{ to{ transform: rotate(360deg); } }
 
@@ -88,9 +85,10 @@
   .reveal-stagger.in > *:nth-child(3){ transition-delay: .19s; }
   .reveal-stagger.in > *:nth-child(4){ transition-delay: .26s; }
   .reveal-stagger.in > *:nth-child(5){ transition-delay: .33s; }
+  .reveal-stagger.in > *:nth-child(6){ transition-delay: .40s; }
 
   @media (prefers-reduced-motion: reduce){
-    .reveal, .reveal-stagger > *, .cursor-blink, .float, .spin-slow, .photo-3d{ transition:none !important; animation:none !important; opacity:1 !important; transform:none !important; }
+    .reveal, .reveal-stagger > *, .cursor-blink, .spin-slow, .photo-3d{ transition:none !important; animation:none !important; opacity:1 !important; transform:none !important; }
   }
 
   /* 3D photo frame (hero) */
@@ -101,25 +99,15 @@
     will-change: transform;
   }
   .photo-3d-inner{ transform: translateZ(20px); transform-style: preserve-3d; }
+  .photo-3d-inner img{ width:100%; height:100%; object-fit:cover; border-radius:9999px; }
   .photo-3d-shine{
     background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
     mix-blend-mode: overlay;
   }
 
-  /* mobile top menu (kept for small screens fallback, unused now) */
-  #mobileMenu{ transition: max-height .3s ease, opacity .25s ease; }
-
-  /* side dock nav */
-  #sideDock{
-    transition: opacity .3s ease, transform .3s ease;
-  }
-  .dock-link{
-    transition: background .15s ease, border-color .15s ease, transform .15s ease;
-  }
-  .dock-link:hover, .dock-link.active{
-    border-color: #5eead4;
-    transform: translateX(-3px);
-  }
+  #sideDock{ transition: opacity .3s ease, transform .3s ease; }
+  .dock-link{ transition: background .15s ease, border-color .15s ease, transform .15s ease; }
+  .dock-link:hover, .dock-link.active{ border-color: #5eead4; transform: translateX(-3px); }
   .nav-link.active{ color: #5eead4; }
   .dock-tooltip{
     opacity: 0; pointer-events:none;
@@ -128,20 +116,38 @@
   }
   .dock-link:hover .dock-tooltip{ opacity:1; transform: translateX(0); }
 
-  /* back to top button */
   #backToTop{
     opacity: 0; pointer-events:none; transform: translateY(10px) scale(0.9);
     transition: opacity .25s ease, transform .25s ease;
   }
   #backToTop.show{ opacity: 1; pointer-events:auto; transform: translateY(0) scale(1); }
 
-  /* typing effect */
   #typedCmd::after{ content: ''; }
+
+  /* project card github link */
+  .project-gh{
+    transition: color .15s ease, transform .15s ease, border-color .15s ease;
+  }
+  .project-gh:hover{ color:#5eead4; border-color:#5eead4; transform: translateY(-1px); }
+  html[data-theme="light"] .project-gh:hover{ color:#0f9d8d; border-color:#0f9d8d; }
+
+  /* play game button pulse */
+  .play-btn{ position: relative; }
+  .play-btn::after{
+    content:""; position:absolute; inset:-4px; border-radius:inherit;
+    border:1px solid #5eead4; opacity:.4;
+    animation: pulse 2.4s ease-out infinite;
+    pointer-events:none;
+  }
+  @keyframes pulse{
+    0%{ transform: scale(1); opacity:.5; }
+    100%{ transform: scale(1.12); opacity:0; }
+  }
 </style>
 </head>
 <body class="font-sans leading-relaxed">
 
-<!-- TOP NAV: logo left, section links centered (desktop only), theme toggle right -->
+<!-- TOP NAV -->
 <nav class="sticky top-0 z-50 backdrop-blur-md border-b border-line bg-inherit">
   <div class="max-w-4xl mx-auto px-6 h-[60px] flex items-center justify-between relative">
     <a href="#top" class="font-mono font-bold text-accent flex items-center gap-2 text-[15px] z-10 flex-shrink-0">
@@ -149,10 +155,14 @@
       nc<span class="text-dim">@</span>fullstack
     </a>
 
-    <div class="hidden md:flex items-center gap-8 font-mono text-[13px] text-dim absolute left-1/2 -translate-x-1/2">
+    <div class="hidden md:flex items-center gap-7 font-mono text-[13px] text-dim absolute left-1/2 -translate-x-1/2">
       <a href="#top" data-section="top" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
         <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
         accueil
+      </a>
+      <a href="#about" data-section="about" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
+        about
       </a>
       <a href="#stack" data-section="stack" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
         <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -162,6 +172,10 @@
         <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         projets
       </a>
+      <!-- <a href="#game" data-section="game" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+        jeu
+      </a> -->
       <a href="#contact" data-section="contact" class="nav-link flex items-center gap-1.5 hover:text-accent transition-colors">
         <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
         contact
@@ -176,27 +190,30 @@
 </nav>
 
 <!-- SIDE DOCK NAVIGATION -->
-<!-- Desktop: right side, vertical, icon + label. Mobile: middle-right of viewport, icons only. -->
 <div id="sideDock" class="md:hidden fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2.5">
-  <a href="#top" data-section="top" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+  <a href="#top" data-section="top" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full shadow-lg p-2.5">
     <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M9 21V12h6v9"/></svg>
-    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">accueil</span>
-    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">accueil</span>
+    <span class="dock-tooltip absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">accueil</span>
   </a>
-  <a href="#stack" data-section="stack" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+  <a href="#about" data-section="about" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full shadow-lg p-2.5">
+    <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
+    <span class="dock-tooltip absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">à propos</span>
+  </a>
+  <a href="#stack" data-section="stack" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full shadow-lg p-2.5">
     <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">stack</span>
-    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">stack</span>
+    <span class="dock-tooltip absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">stack</span>
   </a>
-  <a href="#projects" data-section="projects" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+  <a href="#projects" data-section="projects" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full shadow-lg p-2.5">
     <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">projets</span>
-    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">projets</span>
+    <span class="dock-tooltip absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">projets</span>
   </a>
-  <a href="#contact" data-section="contact" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full md:rounded-xl p-2.5 md:pl-2.5 md:pr-4 shadow-lg">
+  <!-- <a href="#game" data-section="game" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full shadow-lg p-2.5">
+    <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+    <span class="dock-tooltip absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">jeu</span>
+  </a> -->
+  <a href="#contact" data-section="contact" class="dock-link group relative flex items-center gap-3 bg-surface border border-line rounded-full shadow-lg p-2.5">
     <svg class="w-[18px] h-[18px] accent-txt flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
-    <span class="hidden md:inline font-mono text-xs text-dim group-hover:text-accent-txt whitespace-nowrap">contact</span>
-    <span class="dock-tooltip md:hidden absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">contact</span>
+    <span class="dock-tooltip absolute right-full mr-2 bg-surface border border-line px-2 py-1 rounded-md text-xs font-mono whitespace-nowrap">contact</span>
   </a>
 </div>
 
@@ -209,13 +226,10 @@
 <header id="top" class="relative overflow-hidden border-b border-line grid-bg pt-24 pb-20">
   <div class="max-w-4xl mx-auto px-6 relative grid md:grid-cols-[1fr_auto] gap-10 items-center">
 
-    <!-- PHOTO: above text on mobile, right of text on desktop -->
     <div class="photo-3d-wrap mx-auto md:mx-0 order-first md:order-last">
       <div id="photoCard" class="photo-3d relative w-[130px] h-[130px] md:w-[150px] md:h-[150px] rounded-full bg-surface border border-line flex items-center justify-center overflow-hidden shadow-2xl">
         <div class="absolute -inset-2 rounded-full border border-dashed spin-slow pointer-events-none" style="border-color:#2c554f;"></div>
-        <div class="photo-3d-inner flex flex-col items-center justify-center gap-1 text-dim relative z-10">
-          <!-- <svg class="w-10 h-10 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg> -->
-          <!-- <span class="font-mono text-[10px] text-center px-2">photo à venir</span> -->
+        <div class="photo-3d-inner flex flex-col items-center justify-center gap-1 text-dim relative z-10 w-full h-full">
            <img src="./images/profil.jpg" alt="photo de profil">
         </div>
         <div class="photo-3d-shine absolute inset-0 pointer-events-none"></div>
@@ -246,11 +260,75 @@
   </div>
 </header>
 
+<!-- À PROPOS -->
+<section id="about" class="py-16 md:py-20 border-b border-line">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="reveal flex items-baseline gap-3 mb-9">
+      <span class="font-mono text-sm accent-txt opacity-60">01</span>
+      <h2 class="text-[22px] font-bold tracking-tight">À propos de moi</h2>
+      <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
+    </div>
+
+    <div class="reveal reveal-stagger grid md:grid-cols-[1.4fr_1fr] gap-8">
+      <!-- Texte bio -->
+      <div class="space-y-4">
+        <p class="text-dim text-[15px] leading-relaxed">
+          Développeur Fullstack basé à Bafoussam Cameroun, je conçois des applications web complètes —
+          de la base de données à l'interface utilisateur. J'aime transformer un besoin métier concret
+          en un outil fiable, lisible et agréable à utiliser.
+        </p>
+        <p class="text-dim text-[15px] leading-relaxed">
+          Mon parcours mêle <span class="accent-txt">développement web</span> (Django, Flask, React, PHP),
+          <span class="accent-txt">bases de données</span> (PostgreSQL, MySQL, SQLite) et
+          <span class="accent-txt">déploiement</span> sur VPS (Nginx, Docker). Je m'intéresse aussi à l'intelligence artificielle aux
+          systèmes embarqués et aux API REST temps réel.
+        </p>
+        <p class="text-dim text-[15px] leading-relaxed">
+          En dehors du code, j'explore le monde de l'IA et j'aime partager ce que j'apprends.
+          N'hésitez pas à me contacter pour une collaboration ou un projet.
+        </p>
+      </div>
+
+      <!-- Carte infos rapides -->
+      <div class="bg-surface border border-line rounded-xl p-6 space-y-5">
+        <div>
+          <div class="font-mono text-[11px] uppercase tracking-widest text-dim mb-1.5">Basé à</div>
+          <div class="text-sm flex items-center gap-2">
+            <svg class="w-4 h-4 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Bafoussam, Cameroun
+          </div>
+        </div>
+        <div>
+          <div class="font-mono text-[11px] uppercase tracking-widest text-dim mb-1.5">Rôle</div>
+          <div class="text-sm">Développeur Fullstack — Freelance</div>
+        </div>
+        <div>
+          <div class="font-mono text-[11px] uppercase tracking-widest text-dim mb-1.5">Langues</div>
+          <div class="text-sm">Français (courant) · Anglais (technique)</div>
+        </div>
+        <div>
+          <div class="font-mono text-[11px] uppercase tracking-widest text-dim mb-2">Centres d'intérêt</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Web</span>
+            <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Embarqué</span>
+            <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">IA</span>
+            <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Open source</span>
+          </div>
+        </div>
+        <a href="#contact" class="inline-flex items-center gap-2 font-mono text-[13px] px-4 py-2.5 rounded-md border border-line hover:border-accent hover:accent-txt hover:-translate-y-0.5 transition-all w-full justify-center">
+          Discutons ensemble
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- STACK -->
 <section id="stack" class="py-16 md:py-20 border-b border-line">
   <div class="max-w-4xl mx-auto px-6">
     <div class="reveal flex items-baseline gap-3 mb-9">
-      <span class="font-mono text-sm accent-txt opacity-60">01</span>
+      <span class="font-mono text-sm accent-txt opacity-60">02</span>
       <h2 class="text-[22px] font-bold tracking-tight">Stack technique</h2>
       <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
     </div>
@@ -304,6 +382,9 @@
           <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
             <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/postgresql/dbe4ea" alt="PostgreSQL">PostgreSQL
           </span>
+          <span class="pill font-mono text-[13px] pl-2 pr-3 py-1.5 rounded-md border border-line flex items-center gap-2">
+            <img class="brand-icon w-[14px] h-[14px]" src="https://cdn.simpleicons.org/sqlite/dbe4ea" alt="SQLite">SQLite
+          </span>
         </div>
       </div>
 
@@ -332,50 +413,180 @@
 <section id="projects" class="py-16 md:py-20 border-b border-line">
   <div class="max-w-4xl mx-auto px-6">
     <div class="reveal flex items-baseline gap-3 mb-9">
-      <span class="font-mono text-sm accent-txt opacity-60">02</span>
+      <span class="font-mono text-sm accent-txt opacity-60">03</span>
       <h2 class="text-[22px] font-bold tracking-tight">Projets</h2>
       <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
     </div>
 
     <div class="reveal reveal-stagger grid sm:grid-cols-2 gap-6">
-      <!-- Projet 1 : Gestion de stocks -->
+
+      <!-- Projet 1 : Safa -->
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-4" style="background:#2c554f;">
+          <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Safa — Gestion de vente</h3>
+        <p class="text-dim text-sm mb-4 flex-1">
+          Application de gestion de vente pour boutique : enregistrement des ventes, suivi du chiffre d'affaires,
+          gestion des articles et édition de reçus. Interface React connectée à une API Django.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Django</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">React</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">PostgreSQL</span>
+        </div>
+        <!-- Remplacer l'URL par le dépôt réel de Safa -->
+        <a href="https://github.com/cevain-rgb/safa" target="_blank" rel="noopener"
+           class="project-gh mt-auto inline-flex items-center gap-2 font-mono text-xs px-3 py-2 rounded-md border border-line w-fit">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          Code source
+        </a>
+      </div>
+
+      <!-- Projet 2 : StockManager -->
       <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
         <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-4" style="background:#2c554f;">
           <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
         </div>
-        <h3 class="font-bold text-lg mb-2">Système de gestion de stocks</h3>
+        <h3 class="font-bold text-lg mb-2">StockManager — Stock & commandes</h3>
         <p class="text-dim text-sm mb-4 flex-1">
-          Application web pour
-          - suivre les approvisionnements et niveaux d'alerte 
-          - suivre les ventes et facturations
-          - générer des rapports d'inventaire
-          - gérer la structure globale (produits, fournisseurs, versements banques)
-          Des sous-modules comolementaires pour gérer les utilisateurs et droit d'accès ainsi que l'audit.
+          Application web de gestion de stock et de commandes : suivi des approvisionnements, niveaux d'alerte,
+          ventes, facturations, rapports d'inventaire, gestion des produits/fournisseurs/versements et audit.
+          Déployée sur VPS avec accès mobile sécurisé.
         </p>
         <div class="flex flex-wrap gap-2 mb-4">
-          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">php</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">PHP</span>
           <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">PostgreSQL</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Nginx</span>
         </div>
-        
+        <a href="https://github.com/cevain-rgb/stockmanager" target="_blank" rel="noopener"
+           class="project-gh mt-auto inline-flex items-center gap-2 font-mono text-xs px-3 py-2 rounded-md border border-line w-fit">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          Code source
+        </a>
       </div>
 
-      <!-- Projet 2 : Gestion du personnel -->
-      <!--<div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+      <!-- Projet 3 : Ekomarket -->
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
         <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-4" style="background:#2c554f;">
-          <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         </div>
-        <h3 class="font-bold text-lg mb-2">Application de gestion du personnel</h3>
+        <h3 class="font-bold text-lg mb-2">Ekomarket — Marketplace multi-vendeur</h3>
         <p class="text-dim text-sm mb-4 flex-1">
-          Plateforme RH pour centraliser les dossiers employés, suivre les congés et absences, et automatiser le calcul de la paie mensuelle.
+          Plateforme de vente en ligne multi-vendeur : chaque vendeur gère son catalogue, les commandes sont
+          centralisées, et l'acheteur navigue par catégories avec panier et suivi de commande.
         </p>
         <div class="flex flex-wrap gap-2 mb-4">
-          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Node.js / Express</span>
-          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">MySQL</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Django</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">React</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">PostgreSQL</span>
+        </div>
+        <a href="https://github.com/cevain-rgb/ekomarket" target="_blank" rel="noopener"
+           class="project-gh mt-auto inline-flex items-center gap-2 font-mono text-xs px-3 py-2 rounded-md border border-line w-fit">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          Code source
+        </a>
+      </div>
+
+      <!-- Projet 4 : DriveSafe -->
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-4" style="background:#2c554f;">
+          <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2">DriveSafe — Détection de somnolence</h3>
+        <p class="text-dim text-sm mb-4 flex-1">
+          Backend et application mobile d'administration d'un système intelligent de détection de la somnolence
+          au volant. API REST Flask pour la remontée d'alertes en temps réel, dashboard React Native pour la
+          supervision, et stockage double SQLite (embarqué) / PostgreSQL (serveur).
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Python</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Flask</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">SQLite</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">PostgreSQL</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">API REST</span>
           <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">React Native</span>
         </div>
-        <span class="font-mono text-xs text-dim italic">Projet illustratif — code source à venir</span>
+        <a href="https://github.com/cevain-rgb/drivesafe" target="_blank" rel="noopener"
+           class="project-gh mt-auto inline-flex items-center gap-2 font-mono text-xs px-3 py-2 rounded-md border border-line w-fit">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          Code source
+        </a>
       </div>
-    </div>-->
+
+      <!-- Projet 5 : Gestion de confection -->
+      <div class="bg-surface border border-line rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all flex flex-col">
+        <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-4" style="background:#2c554f;">
+          <svg class="w-5 h-5 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Gestion de confection</h3>
+        <p class="text-dim text-sm mb-4 flex-1">
+          Application de gestion d'atelier de confection : suivi des commandes clients, mesures, étapes de
+          production et livraisons. Backend Django et interface React.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">Django</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">React</span>
+          <span class="font-mono text-[11px] px-2 py-1 rounded border border-line text-dim">PostgreSQL</span>
+        </div>
+        <a href="https://github.com/cevain-rgb/confection" target="_blank" rel="noopener"
+           class="project-gh mt-auto inline-flex items-center gap-2 font-mono text-xs px-3 py-2 rounded-md border border-line w-fit">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          Code source
+        </a>
+      </div>
+
+    </div>
+
+    <div class="reveal mt-8 text-center">
+      <a href="https://github.com/cevain-rgb" target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 font-mono text-[13px] px-5 py-2.5 rounded-md border border-line hover:border-accent hover:accent-txt hover:-translate-y-0.5 transition-all">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.2 1.18a11 11 0 0 1 5.82 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+        Voir tous mes dépôts GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="py-16 md:py-20 border-b border-line">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="reveal flex items-baseline gap-3 mb-9">
+      <span class="font-mono text-sm accent-txt opacity-60">04</span>
+      <h2 class="text-[22px] font-bold tracking-tight">Petit jeu</h2>
+      <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
+    </div>
+
+    <div class="reveal bg-surface border border-line rounded-2xl p-7 md:p-9 flex flex-col md:flex-row items-center gap-7 hover:shadow-xl transition-all">
+      <div class="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:#2c554f;">
+        <svg class="w-9 h-9 accent-txt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/>
+          <line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/>
+          <rect x="2" y="6" width="20" height="12" rx="2"/>
+        </svg>
+      </div>
+      <div class="flex-1 text-center md:text-left">
+        <h3 class="font-bold text-xl mb-2">Jouer directement dans le navigateur</h3>
+        <p class="text-dim text-sm leading-relaxed mb-0">
+          Un petit jeu web que j'ai développé et hébergé sur GitHub Pages.
+          Clique sur le bouton pour y accéder — aucune installation nécessaire.
+        </p>
+      </div>
+      <a href="https://cevain-rgb.github.io/mon-jeu/" target="_blank" rel="noopener"
+         class="play-btn inline-flex items-center gap-2 font-mono text-[13px] px-6 py-3 rounded-md font-semibold hover:brightness-110 hover:-translate-y-0.5 transition-all flex-shrink-0"
+         style="background:#5eead4; color:#0d1117;">
+        <svg class="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Jouer maintenant
+      </a>
+    </div>
+
+    <!-- Optionnel : deuxième jeu ou lien dépôt source -->
+    <div class="reveal mt-4 text-center">
+      <a href="https://github.com/cevain-rgb" target="_blank" rel="noopener"
+         class="font-mono text-xs text-dim hover:accent-txt transition-colors">
+        Voir le code source du jeu sur GitHub →
+      </a>
+    </div>
   </div>
 </section>
 
@@ -383,7 +594,7 @@
 <section id="contact" class="py-16 md:py-20">
   <div class="max-w-4xl mx-auto px-6">
     <div class="reveal flex items-baseline gap-3 mb-9">
-      <span class="font-mono text-sm accent-txt opacity-60">03</span>
+      <span class="font-mono text-sm accent-txt opacity-60">05</span>
       <h2 class="text-[22px] font-bold tracking-tight">Contact</h2>
       <div class="flex-1 h-px" style="background:currentColor; opacity:.15;"></div>
     </div>
@@ -475,8 +686,8 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // Active state on side dock based on scroll position
-  var sections = ['top','stack','projects','contact'].map(function(id){ return document.getElementById(id); });
+  // Active state on nav/dock based on scroll position
+  var sections = ['top','about','stack','projects','game','contact'].map(function(id){ return document.getElementById(id); });
   var dockLinks = document.querySelectorAll('.dock-link, .nav-link');
   var sectionIO = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -490,7 +701,7 @@
   }, { threshold: 0.4, rootMargin: '-80px 0px -40% 0px' });
   sections.forEach(function(sec){ if(sec) sectionIO.observe(sec); });
 
-  // Typing effect: cycles "whoami" through related commands
+  // Typing effect
   var commands = ['whoami', 'cat skills.txt', 'ls projects/', 'echo "Bonjour !"'];
   var typedEl = document.getElementById('typedCmd');
   var cmdIndex = 0;
